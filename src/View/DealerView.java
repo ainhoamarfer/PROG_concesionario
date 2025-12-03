@@ -1,5 +1,11 @@
 package View;
 
+import Model.CarDTO;
+import Model.ClientDTO;
+import Model.SalesDTO;
+
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.util.List;
 import java.util.Scanner;
 
 public class DealerView {
@@ -41,5 +47,62 @@ public class DealerView {
 
         return opcion - 1;
 
+    }
+
+    public CarDTO addCar() {
+        System.out.println("Introduce la marca del coche a registrar");
+        String label = sc.nextLine();
+
+        System.out.println("El modelo");
+        String model = sc.nextLine();
+
+        System.out.println("La matricula");
+        String carPlate = sc.nextLine();
+
+        System.out.println("Su precio");
+        double price = Double.parseDouble(sc.nextLine());
+
+        System.out.println("Cuantos años tiene");
+        int years = Integer.parseInt(sc.nextLine());
+
+        System.out.println("Y sus kilómetros");
+        double km = Double.parseDouble(sc.nextLine());
+
+        return new CarDTO(label, model, carPlate, price, years, km);
+    }
+
+    public List<CarDTO> showAvaliableCars() {
+
+        return List.of();
+    }
+
+    public CarDTO lookForCar(CarDTO carToLookFor) {
+
+        return null;
+    }
+
+    public boolean registerClient(List<ClientDTO> clients) {
+        System.out.println("Introduce el nombre del cliente");
+        String name = sc.nextLine();
+
+        System.out.println("Su DNI");
+        String dni = sc.nextLine();
+
+        System.out.println("Y su teléfono móvil");
+        String tel = sc.nextLine();
+
+        for(int i = 0; i < clients.size(); i++){
+            if(clients.get(i).getDni().equals(dni)){
+                return false;
+            }
+        }
+        return true;//ver si necesito dos funciones, una de validar y otra de añadir.
+    }
+
+    public SalesDTO registerSale() {
+        return null;
+    }
+
+    public List<SalesDTO> showListSales() {
     }
 }

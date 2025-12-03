@@ -3,6 +3,7 @@ package Controller;
 import Model.CarDTO;
 import Model.ClientDTO;
 import Model.SalesDTO;
+import View.DealerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,13 @@ public class DealerController {
     //5. Registrar una venta, indicándole el cliente y el coche involucrados
     //6. Listar ventas
 
+
+
     private List<CarDTO> cars;
     private List<ClientDTO> clients;
     private List<SalesDTO> sales;
 
-    private DealerController view;
+    private DealerView view;
 
     public static final int INITIAL_CARS = 5;
     public static final int INITIAL_CLIENTS = 2;
@@ -68,49 +71,49 @@ public class DealerController {
         return clients;
     }
 
-    public List<CarDTO> addCars(){
-        return cars;
+    public CarDTO addCar(CarDTO car){
+        cars.add(car);
+        return car;//ver si devuelvo boolean, void o cardto para comprobar que no hay un coche con la misma matricula
+    }
+
+    enum EnumOptions {
+        ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES,
     }
 
     public void run(){
         int op;
         while(true){
             op = view.menu();
-            OpcionesEnum opcion = OpcionesEnum.values()[op];
+            EnumOptions option = EnumOptions.values()[op];
 
-            if(opcion ==  OpcionesEnum.ANIADIR){
-                AlumnoDTO alumno = view.aniadirMenu();
+            if(option ==  EnumOptions.ADD){
+                CarDTO car = view.addCar();
 
-                aniadeAlumno(alumno);
+                //addCar();
             }
-            if(opcion == OpcionesEnum.ELIMINAR){
-                String dni = view.eliminarMenu();
-                eliminarAlumno(dni);
-            }
-            if(opcion == OpcionesEnum.BUSCAR_NOMBRE){
-                String nombre = view.buscarNombreMenu();
-                AlumnosContador alumnos = buscarAlumnos(nombre);
-                view.mostrarAlumnos(alumnos);
-            }
-            if(opcion == OpcionesEnum.BUSCAR_ALUMNO){
-                String dni = view.buscarDniMenu();
-                AlumnoDTO alumno = buscarAlumnoDni(dni);
-                view.mostrarAlumnos(new AlumnosContador(new AlumnoDTO[]{alumno}, 1));
+            if(option == EnumOptions.SHOW){
+                List<CarDTO> carsAvaliable = view.showAvaliableCars();
 
             }
-            if(opcion == OpcionesEnum.PASAR_LISTA){
-                StringContador dnis = view.pasarListaMenu(new AlumnosContador(alumnos, count));
-                StringContador dnisNoEncontrados = marcarAlumnosPresente(dnis);
-                view.mostrarErrorLista(dnisNoEncontrados);
+            if(option == EnumOptions.LOOK_FOR){
+                CarDTO foundCar = view.lookForCar();
+
+                //view.mostrarAlumnos(alumnos);
+            }
+            if(option == EnumOptions.REGISTER_CLIENT){
+                String dni = view.registerClient();
+
 
             }
-            if(opcion == OpcionesEnum.MOSTRAR_CLASE){
-                view.mostarClase(new AlumnosContador(alumnos, count));
+            if(option == EnumOptions.REGISTER_SALE){
+                Model.SalesDTO newSale = view.registerSale();
+
             }
-            if(opcion == OpcionesEnum.SALIR){
-                view.mostrarGoodbye();
-                return;
+            if(option == EnumOptions.LIST_SALES){
+                List<SalesDTO> sales = view.showListSales();
             }
+            return;
+        }
     }
 
 
