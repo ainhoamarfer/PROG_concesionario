@@ -82,21 +82,26 @@ public class DealerView {
     }
 
     public boolean registerClient(List<ClientDTO> clients) {
+
+        System.out.println("Introduce el DNI del nuevo cliente");
+        String dni = sc.nextLine();
+
+        verifyNewClientDNI();//preguntar pedro
+
+        for(int i = 0; i < clients.size(); i++){
+            if(clients.get(i).getDni().equals(dni)){
+                System.err.println("El cliente ya existe");
+                return false;
+            }
+        }
+
         System.out.println("Introduce el nombre del cliente");
         String name = sc.nextLine();
-
-        System.out.println("Su DNI");
-        String dni = sc.nextLine();
 
         System.out.println("Y su teléfono móvil");
         String tel = sc.nextLine();
 
-        for(int i = 0; i < clients.size(); i++){
-            if(clients.get(i).getDni().equals(dni)){
-                return false;
-            }
-        }
-        return true;//ver si necesito dos funciones, una de validar y otra de añadir.
+        return true;
     }
 
     public SalesDTO registerSale() {

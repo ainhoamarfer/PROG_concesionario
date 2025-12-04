@@ -116,5 +116,14 @@ public class DealerController {
         }
     }
 
+    public boolean verifyNewClientDNI(ClientDTO client, String dni){
+        for(int i = 0; i < clients.size(); i++){
+            if(clients.get(i).getDni().equals(dni)){
+                System.err.println("El cliente ya existe");
+                return false;
+            }
+        }
+    }
+
 
 }
