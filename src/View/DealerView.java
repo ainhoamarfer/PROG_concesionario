@@ -4,7 +4,6 @@ import Model.CarDTO;
 import Model.ClientDTO;
 import Model.SalesDTO;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.List;
 import java.util.Scanner;
 
@@ -49,7 +48,7 @@ public class DealerView {
 
     }
 
-    public CarDTO addCar() {
+    public CarDTO registerCar() {
         System.out.println("Introduce la marca del coche a registrar");
         String label = sc.nextLine();
 
@@ -71,43 +70,48 @@ public class DealerView {
         return new CarDTO(label, model, carPlate, price, years, km);
     }
 
-    public List<CarDTO> showAvaliableCars() {
-
-        return List.of();
+    public void showAvaliableCars(List<CarDTO> cars) {
+        for (CarDTO car : cars) {
+            System.out.println(car);
+        }
     }
 
-    public CarDTO lookForCar(CarDTO carToLookFor) {
+    public CarDTO searchedCar(List<CarDTO> cars) {
+        System.out.println("Cuál es la matricula del coche que estas buscando?");
+        String carPlate = sc.nextLine();
 
-        return null;
+        for(carPlate )
+        return
     }
 
-    public boolean registerClient(List<ClientDTO> clients) {
+    public ClientDTO registerClient() {
 
         System.out.println("Introduce el DNI del nuevo cliente");
         String dni = sc.nextLine();
-
-        verifyNewClientDNI();//preguntar pedro
-
-        for(int i = 0; i < clients.size(); i++){
-            if(clients.get(i).getDni().equals(dni)){
-                System.err.println("El cliente ya existe");
-                return false;
-            }
-        }
 
         System.out.println("Introduce el nombre del cliente");
         String name = sc.nextLine();
 
         System.out.println("Y su teléfono móvil");
-        String tel = sc.nextLine();
+        int tel = Integer.parseInt(sc.nextLine());
 
-        return true;
+        return new ClientDTO(name, dni, tel);
     }
 
     public SalesDTO registerSale() {
         return null;
     }
 
-    public List<SalesDTO> showListSales() {
+    public void showListSales(List<SalesDTO> sales) {
+        for (SalesDTO sale : sales) {
+            System.out.println(sale);
+        }
+    }
+    public void errorMsg(String msg) {
+        System.err.println(msg);
+    }
+
+    public void msgConffirmation(String msg) {
+        System.out.println(msg);
     }
 }

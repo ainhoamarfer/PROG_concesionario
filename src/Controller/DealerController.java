@@ -71,11 +71,6 @@ public class DealerController {
         return clients;
     }
 
-    public CarDTO addCar(CarDTO car){
-        cars.add(car);
-        return car;//ver si devuelvo boolean, void o cardto para comprobar que no hay un coche con la misma matricula
-    }
-
     enum EnumOptions {
         ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES,
     }
@@ -87,43 +82,62 @@ public class DealerController {
             EnumOptions option = EnumOptions.values()[op];
 
             if(option ==  EnumOptions.ADD){
-                CarDTO car = view.addCar();
-
-                //addCar();
+                CarDTO car = view.registerCar();
+                addCar(car);
             }
+
             if(option == EnumOptions.SHOW){
-                List<CarDTO> carsAvaliable = view.showAvaliableCars();
-
+                view.showAvaliableCars(cars);
             }
+
             if(option == EnumOptions.LOOK_FOR){
                 CarDTO foundCar = view.lookForCar();
 
                 //view.mostrarAlumnos(alumnos);
             }
+
             if(option == EnumOptions.REGISTER_CLIENT){
-                String dni = view.registerClient();
-
-
+                Model.ClientDTO client= view.registerClient();
+                boolean allowed = verifyNewClientDNI(client);
+                if(allowed){
+                    view.msgConffirmation("El cliente fue registrado correctamente");
+                }
             }
             if(option == EnumOptions.REGISTER_SALE){
                 Model.SalesDTO newSale = view.registerSale();
 
             }
             if(option == EnumOptions.LIST_SALES){
-                List<SalesDTO> sales = view.showListSales();
+
+                view.showListSales(sales);
             }
             return;
         }
     }
 
-    public boolean verifyNewClientDNI(ClientDTO client, String dni){
-        for(int i = 0; i < clients.size(); i++){
-            if(clients.get(i).getDni().equals(dni)){
-                System.err.println("El cliente ya existe");
+    public boolean verifyNewClientDNI(ClientDTO client){
+        client = view.registerClient();
+        String dni = client.getDni();
+
+        for (ClientDTO clientDTO : clients) {
+            if (clientDTO.getDni().equals(dni)) {
+                view.errorMsg("El cliente ya existe");
                 return false;
             }
         }
+        return true;
+    }
+    public void addCar(CarDTO newCar){
+        cars.add(newCar);
     }
 
+    public CarDTO lookForCar(CarDTO carToLookFor) {
+        for (CarDTO car : List.of(carToLookFor)) {
+            if (car.getModel().equals(carToLookFor.getModel())) {
+                return car;
+            }
+        }
+        return null;
+    }
 
 }
