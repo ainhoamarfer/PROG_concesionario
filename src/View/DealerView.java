@@ -23,13 +23,13 @@ public class DealerView {
     }
 
     public int menu() {
-        System.out.println("Menu Principal");
+        System.out.println("\nBienvenidxs al concesionario Carricoche, ¿Qué desea hacer?");
         System.out.println("1. Añadir coches al concesionario");
         System.out.println("2. Mostar los coches disponibles");
         System.out.println("3. Buscar coches por marca, rango de precios o año.");
         System.out.println("4. Registrar un nuevo cliente");
         System.out.println("5. Registrar una venta");
-        System.out.println("6. Listar ventas");
+        System.out.println("6. Listar ventas\n");
 
         int opcion = -1;
         while (true) {
@@ -43,9 +43,7 @@ public class DealerView {
 
             System.err.println("Introduce una opción valida");
         }
-
         return opcion - 1;
-
     }
 
     public CarDTO registerCar() {
@@ -70,18 +68,88 @@ public class DealerView {
         return new CarDTO(label, model, carPlate, price, years, km);
     }
 
+
+
     public void showAvaliableCars(List<CarDTO> cars) {
-        for (CarDTO car : cars) {
-            System.out.println(car);
+
+        if (cars.isEmpty()) {
+            System.out.println("No hay coches disponibles");
+            return;
+        }else System.out.print("Hay " + cars.size() + " coches disponibles:\n");
+        for (int i = 0; i < cars.size(); i++){
+            CarDTO car = cars.get(i);
+            System.out.println((i + 1)+ "." + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
+                    car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
+
         }
+
     }
 
-    public CarDTO searchedCar(List<CarDTO> cars) {
-        System.out.println("Cuál es la matricula del coche que estas buscando?");
-        String carPlate = sc.nextLine();
+    public int typeOfCarSearch() {
+        System.out.println("¿Cómo prefieres buscar el coche?: ");
+        System.out.println("1. Por marca");
+        System.out.println("2. Por rango de precios");
+        System.out.println("3. Por año");
 
-        for(carPlate )
-        return
+        int option = -1;
+        while (true) {
+            System.out.println("Selecciona una opción");
+            option = sc.nextInt();
+
+            sc.nextLine();
+            if (option >= 1 && option <= 4) {
+                break;
+            }
+
+            System.err.println("Introduce una opción valida");
+        }
+        return option - 1;
+    }
+
+   public void searchCarByLabel(List<CarDTO> cars) {
+
+       System.out.println("Cuál es la matricula del coche que estas buscando?");
+       String carPlate = sc.nextLine();
+
+       CarDTO car = null;
+       for (int i = 0; i < cars.size(); i++) {
+           car = cars.get(i);
+           if (car.getCarPlate().equals(carPlate)) {
+               System.out.println("Coche encontrado: " + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
+                       car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
+           } else System.err.println("No tenemos ningún coche registrado con esa matrícula, lo siento.");
+       }
+   }
+
+    public void searchCarByPrice(List<CarDTO> cars) {
+
+        System.out.println("Sobre que precio ronda el coche que estas buscando?");
+        double price = Double.parseDouble(sc.nextLine());
+
+        CarDTO car = null;
+        for (int i = 0; i < cars.size(); i++) {
+            car = cars.get(i);
+            if (car.getPrice() == price) {
+                System.out.println("Coche encontrado: " + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
+                        car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
+            } else System.err.println("No tenemos ningún coche registrado con ese precio, lo siento.");
+        }
+
+    }
+
+    public void searchCarByYear(List<CarDTO> cars) {
+
+        System.out.println("De qué año es el coche que estas buscando?");
+        int year = sc.nextInt();
+
+        CarDTO car = null;
+        for (int i = 0; i < cars.size(); i++) {
+            car = cars.get(i);
+            if (car.getYears() == year) {
+                System.out.println("Coche encontrado: " + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
+                        car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
+            } else System.err.println("No tenemos ningún coche registrado con ese año, lo siento.");
+        }
     }
 
     public ClientDTO registerClient() {
@@ -107,6 +175,7 @@ public class DealerView {
             System.out.println(sale);
         }
     }
+
     public void errorMsg(String msg) {
         System.err.println(msg);
     }

@@ -4,6 +4,7 @@ import Model.CarDTO;
 import Model.ClientDTO;
 import Model.SalesDTO;
 import View.DealerView;
+import View.TypeCarSearch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class DealerController {
     public static final int INITIAL_CLIENTS = 2;
     public static final int INITIAL_SALES = 0;
 
-    public DealerController(DealerController view) {
+    public DealerController(DealerView view) {
 
         //Memoria del programa
         this.view = view;
@@ -42,7 +43,6 @@ public class DealerController {
         loadCars();
         loadClients();
         run();
-        int carCount = 0;
     }
 
     /**
@@ -91,9 +91,7 @@ public class DealerController {
             }
 
             if(option == EnumOptions.LOOK_FOR){
-                CarDTO foundCar = view.lookForCar();
-
-                //view.mostrarAlumnos(alumnos);
+                view.typeOfCarSearch();
             }
 
             if(option == EnumOptions.REGISTER_CLIENT){
@@ -111,7 +109,6 @@ public class DealerController {
 
                 view.showListSales(sales);
             }
-            return;
         }
     }
 
@@ -138,6 +135,26 @@ public class DealerController {
             }
         }
         return null;
+    }
+
+    public void menuSearchCar(){
+        int op;
+        while(true){
+            op = view.typeOfCarSearch();
+            TypeCarSearch option = TypeCarSearch.values()[op];
+
+            if(option == TypeCarSearch.LABEL){
+                view.searchCarByLabel(cars);
+            }
+
+            if(option == TypeCarSearch.PRICE){
+                view.searchCarByPrice(cars);
+            }
+
+            if(option == TypeCarSearch.YEAR){
+                view.searchCarByYear(cars);
+            }
+        }
     }
 
 }

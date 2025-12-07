@@ -1,21 +1,18 @@
 package Model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CarDTO {
     //Coches que como mínimo tengan marca, modelo, matricula, precio, año y kilómetros
     //5 coches y 2 clientes.
 
-    private String labels;
+    private String label;
     private String model;
     private String carPlate;
     private double price;
     private int years;
     private double km;
 
-    public CarDTO(String labels, String model, String carPlate, double price, int years, double km) {
-        this.labels = labels;
+    public CarDTO(String label, String model, String carPlate, double price, int years, double km) {
+        this.label = label;
         this.model = model;
         this.carPlate = carPlate;
         this.price = price;
@@ -23,12 +20,12 @@ public class CarDTO {
         this.km = km;
     }
 
-    public String getLabels() {
-        return labels;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLabels(String labels) {
-        this.labels = labels;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getModel() {
