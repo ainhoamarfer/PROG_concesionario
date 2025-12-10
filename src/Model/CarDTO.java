@@ -10,6 +10,7 @@ public class CarDTO {
     private double price;
     private int years;
     private double km;
+    private boolean sold;
 
     public CarDTO(String label, String model, String carPlate, double price, int years, double km) {
         this.label = label;
@@ -18,6 +19,15 @@ public class CarDTO {
         this.price = price;
         this.years = years;
         this.km = km;
+        this.sold = false;
+    }
+
+    public boolean isSold() {
+        return sold;
+    }
+
+    public void setSold(boolean sold) {
+        this.sold = sold;
     }
 
     public String getLabel() {

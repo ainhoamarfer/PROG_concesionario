@@ -2,19 +2,13 @@ package View;
 
 import Model.CarDTO;
 import Model.ClientDTO;
-import Model.SalesDTO;
+import Model.SaleForm;
+import Model.SaleDTO;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class DealerView {
-    //1. Añadir coches al concesionario
-    //2. Mostar los coches disponibles
-    //3. Buscar coches usando: a. Marca b. Rango de precios c. Año
-    //4. Registrar un nuevo cliente, mostrando un error si ya existe un cliente con el
-    //mismo dni
-    //5. Registrar una venta, indicándole el cliente y el coche involucrados
-    //6. Listar ventas
 
     Scanner sc = new Scanner(System.in);
 
@@ -23,7 +17,8 @@ public class DealerView {
     }
 
     public int menu() {
-        System.out.println("\nBienvenidxs al concesionario Carricoche, ¿Qué desea hacer?");
+        System.out.println("\nConcesionario Carricoche");
+        System.out.println("¿Qué desea hacer?");
         System.out.println("1. Añadir coches al concesionario");
         System.out.println("2. Mostar los coches disponibles");
         System.out.println("3. Buscar coches por marca, rango de precios o año.");
@@ -47,6 +42,8 @@ public class DealerView {
     }
 
     public CarDTO registerCar() {
+        System.out.println("··············REGISTRAR COCHE··············");
+
         System.out.println("Introduce la marca del coche a registrar");
         String label = sc.nextLine();
 
@@ -68,9 +65,8 @@ public class DealerView {
         return new CarDTO(label, model, carPlate, price, years, km);
     }
 
-
-
     public void showAvaliableCars(List<CarDTO> cars) {
+        System.out.println("··············COCHES DEL CONCESIONARIO··············");
 
         if (cars.isEmpty()) {
             System.out.println("No hay coches disponibles");
@@ -79,13 +75,12 @@ public class DealerView {
         for (int i = 0; i < cars.size(); i++){
             CarDTO car = cars.get(i);
             System.out.println((i + 1)+ "." + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
-                    car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
-
+            car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
         }
-
     }
 
     public int typeOfCarSearch() {
+        System.out.println("··············BUSCAR COCHE··············");
         System.out.println("¿Cómo prefieres buscar el coche?: ");
         System.out.println("1. Por marca");
         System.out.println("2. Por rango de precios");
@@ -110,6 +105,7 @@ public class DealerView {
 
        System.out.println("Cuál es la matricula del coche que estas buscando?");
        String carPlate = sc.nextLine();
+        boolean foundCar = false;
 
        CarDTO car = null;
        for (int i = 0; i < cars.size(); i++) {
@@ -117,7 +113,12 @@ public class DealerView {
            if (car.getCarPlate().equals(carPlate)) {
                System.out.println("Coche encontrado: " + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
                        car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
-           } else System.err.println("No tenemos ningún coche registrado con esa matrícula, lo siento.");
+               foundCar = true;
+           } else foundCar = false;
+       }
+
+       if (!foundCar) {
+           System.err.println("No tenemos ningún coche registrado con esa matrícula, lo siento.");
        }
    }
 
@@ -152,7 +153,8 @@ public class DealerView {
         }
     }
 
-    public ClientDTO registerClient() {
+    public ClientDTO registerClientData() {
+        System.out.println("··············REGISTRAR NUEVO CLIENTE··············");
 
         System.out.println("Introduce el DNI del nuevo cliente");
         String dni = sc.nextLine();
@@ -166,13 +168,34 @@ public class DealerView {
         return new ClientDTO(name, dni, tel);
     }
 
-    public SalesDTO registerSale() {
-        return null;
+    public SaleForm registerSaleData() {
+        System.out.println("··············REGISTRAR VENTA··············");
+
+        System.out.println("Dime la matricula del coche a vender");
+        String plate = sc.nextLine();
+
+        System.out.println("Ahora el DNI del comprador");
+        String dni = sc.nextLine();
+
+        return new SaleForm(plate, dni);
     }
 
-    public void showListSales(List<SalesDTO> sales) {
-        for (SalesDTO sale : sales) {
-            System.out.println(sale);
+    public void showListSales(List<SaleDTO> sales) {
+        System.out.println("··············LISTA DE VENTAS··············");
+
+        if (sales.isEmpty()) {
+            System.out.println("No hay ventas registradas");
+            return;
+        }else System.out.print("Hay " + sales.size() + " ventas registradas:\n");
+
+        for (int i = 0; i < sales.size(); i++){
+            SaleDTO sale = sales.get(i);
+            CarDTO car = sale.getCar();
+            String plate = car.getCarPlate();
+            ClientDTO client = sale.getClient();
+            String dni = client.getDni();
+            System.out.println((i + 1)+ ". ID venta: " + sale.getIdSales() + " | Matrícula coche: " + plate + " | DNI Cliente: " +
+                    dni + " | Fecha compra: " + sale.getDate() + " | Precio: " + sale.getPrice() + " euros");
         }
     }
 

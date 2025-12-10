@@ -2,11 +2,13 @@ package Controller;
 
 import Model.CarDTO;
 import Model.ClientDTO;
-import Model.SalesDTO;
+import Model.SaleForm;
+import Model.SaleDTO;
 import View.DealerView;
 import View.TypeCarSearch;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DealerController {
@@ -25,13 +27,14 @@ public class DealerController {
 
     private List<CarDTO> cars;
     private List<ClientDTO> clients;
-    private List<SalesDTO> sales;
+    private List<SaleDTO> sales;
 
     private DealerView view;
 
     public static final int INITIAL_CARS = 5;
     public static final int INITIAL_CLIENTS = 2;
     public static final int INITIAL_SALES = 0;
+    int salesCount = 2;
 
     public DealerController(DealerView view) {
 
@@ -42,6 +45,7 @@ public class DealerController {
         sales = new ArrayList<>(INITIAL_SALES);
         loadCars();
         loadClients();
+        loadSales();
         run();
     }
 
@@ -70,6 +74,17 @@ public class DealerController {
 
         return clients;
     }
+    /**
+     *
+     * @return lista de ventas
+     *
+     */
+    public List<SaleDTO> loadSales(){
+        sales.add(new SaleDTO(1, clients.get(1), cars.get(1), new Date(), 62000));
+        sales.add(new SaleDTO(2, clients.get(0), cars.get(0), new Date(), 54000));
+
+        return sales;
+    }
 
     enum EnumOptions {
         ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES,
@@ -83,7 +98,10 @@ public class DealerController {
 
             if(option ==  EnumOptions.ADD){
                 CarDTO car = view.registerCar();
-                addCar(car);
+                boolean allowedCar = verifyNewCar(car);
+                if(allowedCar){
+                    addCar(car);
+                }
             }
 
             if(option == EnumOptions.SHOW){
@@ -91,29 +109,28 @@ public class DealerController {
             }
 
             if(option == EnumOptions.LOOK_FOR){
-                view.typeOfCarSearch();
+                menuSearchCar();
             }
 
             if(option == EnumOptions.REGISTER_CLIENT){
-                Model.ClientDTO client= view.registerClient();
-                boolean allowed = verifyNewClientDNI(client);
-                if(allowed){
-                    view.msgConffirmation("El cliente fue registrado correctamente");
+                ClientDTO client= view.registerClientData();
+                boolean allowedClient = verifyNewClientDNI(client);
+                if(allowedClient){
+                    addClient(client);
                 }
             }
             if(option == EnumOptions.REGISTER_SALE){
-                Model.SalesDTO newSale = view.registerSale();
+               SaleForm newSale = view.registerSaleData();
+               registerSale(newSale);
 
             }
             if(option == EnumOptions.LIST_SALES){
-
                 view.showListSales(sales);
             }
         }
     }
 
     public boolean verifyNewClientDNI(ClientDTO client){
-        client = view.registerClient();
         String dni = client.getDni();
 
         for (ClientDTO clientDTO : clients) {
@@ -124,17 +141,27 @@ public class DealerController {
         }
         return true;
     }
-    public void addCar(CarDTO newCar){
-        cars.add(newCar);
-    }
 
-    public CarDTO lookForCar(CarDTO carToLookFor) {
-        for (CarDTO car : List.of(carToLookFor)) {
-            if (car.getModel().equals(carToLookFor.getModel())) {
-                return car;
+    public boolean verifyNewCar(CarDTO car){
+        String plate = car.getCarPlate();
+
+        for (CarDTO carDTO : cars) {
+            if (carDTO.getCarPlate().equals(plate)) {
+                view.errorMsg("El coche ya existe");
+                return false;
             }
         }
-        return null;
+        return true;
+    }
+
+    public void addClient(ClientDTO newClient){
+        clients.add(newClient);
+        view.msgConffirmation("El cliente fue registrado correctamente");
+    }
+
+    public void addCar(CarDTO newCar){
+        cars.add(newCar);
+        view.msgConffirmation("El coche fue registrado correctamente");
     }
 
     public void menuSearchCar(){
@@ -154,7 +181,41 @@ public class DealerController {
             if(option == TypeCarSearch.YEAR){
                 view.searchCarByYear(cars);
             }
+            run();
         }
     }
 
+    public void registerSale(SaleForm form){
+
+        CarDTO saleCar = null;
+        for (CarDTO car : cars) {
+            if(car.getCarPlate().equals(form.getPlateCar()) && !car.isSold()){
+                saleCar = car;
+                car.setSold(true);
+                break;
+            }
+        }
+
+        if(saleCar == null){
+            view.errorMsg("El coche no existe");
+            return;
+        }
+
+        ClientDTO saleClient = null;
+        for (ClientDTO client : clients) {
+            if(client.getDni().equals(form.getDniClient())){
+                saleClient = client;
+                break;
+            }
+        }
+
+        if(saleClient == null){
+            view.errorMsg("El cliente no existe");
+            return;
+        }
+
+        sales.add(new SaleDTO(salesCount + 1, saleClient, saleCar, new Date(), saleCar.getPrice()));
+        view.msgConffirmation("La venta se realizó correctamente");
+
+    }
 }

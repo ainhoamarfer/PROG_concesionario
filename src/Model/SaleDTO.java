@@ -2,7 +2,7 @@ package Model;
 
 import java.util.Date;
 
-public class SalesDTO {
+public class SaleDTO {
     //• Ventas con idVenta, cliente, coche, fecha y precio de venta.
 
     private int idSales;
@@ -11,7 +11,7 @@ public class SalesDTO {
     private Date date;
     private double price;
 
-    public SalesDTO(int idSales, ClientDTO client, CarDTO car, Date date, double price) {
+    public SaleDTO(int idSales, ClientDTO client, CarDTO car, Date date, double price) {
         this.idSales = idSales;
         this.client = client;
         this.car = car;
