@@ -14,15 +14,8 @@ public class SaleForm {
         return plateCar;
     }
 
-    public void setPlateCar(String plateCar) {
-        this.plateCar = plateCar;
-    }
-
     public String getDniClient() {
         return dniClient;
     }
 
-    public void setDniClient(String dniClient) {
-        this.dniClient = dniClient;
-    }
 }

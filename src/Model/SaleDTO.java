@@ -23,39 +23,19 @@ public class SaleDTO {
         return idSales;
     }
 
-    public void setIdSales(int idSales) {
-        this.idSales = idSales;
-    }
-
     public ClientDTO getClient() {
         return client;
-    }
-
-    public void setClient(ClientDTO client) {
-        this.client = client;
     }
 
     public CarDTO getCar() {
         return car;
     }
 
-    public void setCar(CarDTO car) {
-        this.car = car;
-    }
-
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public double getPrice() {
         return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 }

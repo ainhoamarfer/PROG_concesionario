@@ -25,17 +25,22 @@ public class DealerController {
 
 
 
-    private List<CarDTO> cars;
-    private List<ClientDTO> clients;
-    private List<SaleDTO> sales;
+    private final List<CarDTO> cars;
+    private final List<ClientDTO> clients;
+    private final List<SaleDTO> sales;
 
-    private DealerView view;
+    private final DealerView view;
 
     public static final int INITIAL_CARS = 5;
     public static final int INITIAL_CLIENTS = 2;
-    public static final int INITIAL_SALES = 0;
+    public static final int INITIAL_SALES = 2;
     int salesCount = 2;
 
+    /**
+     * Controlador principal de la aplicación del concesionario.
+     * Gestiona colecciones de coches, clientes y ventas, y coordina
+     * la interacción con la vista (`DealerView`).
+     */
     public DealerController(DealerView view) {
 
         //Memoria del programa
@@ -50,23 +55,25 @@ public class DealerController {
     }
 
     /**
+     * Carga una lista por defecto de coches en memoria.
+     * Este método devuelve la lista actual para facilitar pruebas.
      *
-     * @return una lista de coches
+     * @return lista de `CarDTO` cargados
      */
     public List<CarDTO> loadCars(){
-        cars.add(new CarDTO("Toyota", "T542", "123654WFT", 95000, 2000, 152000));
-        cars.add(new CarDTO("Honda", "R125", "129545ERG", 1000000, 2012, 20000));
-        cars.add(new CarDTO("Toyota", "G159", "129754JUT", 45000, 1995, 48000));
-        cars.add(new CarDTO("Subaru", "H987", "917354EFT", 78000, 2005, 62000));
-        cars.add(new CarDTO("Suzuki", "W547", "554871PDN", 32000, 2000, 85000));
+        cars.add(new CarDTO("Toyota", "T542", "123654WFT", 25000, 2000, 152000, true));
+        cars.add(new CarDTO("Honda", "R125", "129545ERG", 40000, 2012, 20000, true));
+        cars.add(new CarDTO("Toyota", "G159", "129754JUT", 45000, 1995, 48000, false));
+        cars.add(new CarDTO("Subaru", "H987", "917354EFT", 38000, 2005, 62000, false));
+        cars.add(new CarDTO("Suzuki", "W547", "554871PDN", 32000, 2000, 85000, false));
 
         return cars;
     }
 
     /**
+     * Carga una lista por defecto de clientes en memoria.
      *
-     * @return lista de clientes
-     *
+     * @return lista de `ClientDTO` cargados
      */
     public List<ClientDTO> loadClients(){
         clients.add(new ClientDTO("Sara", "12396584C", 659887741));
@@ -75,9 +82,9 @@ public class DealerController {
         return clients;
     }
     /**
+     * Carga una lista por defecto de ventas en memoria.
      *
-     * @return lista de ventas
-     *
+     * @return lista de `SaleDTO` cargadas
      */
     public List<SaleDTO> loadSales(){
         sales.add(new SaleDTO(1, clients.get(1), cars.get(1), new Date(), 62000));
@@ -86,10 +93,20 @@ public class DealerController {
         return sales;
     }
 
+    /**
+     * Opciones del menú principal del controlador.
+     */
     enum EnumOptions {
-        ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES,
+        ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES, STATISTICS
     }
 
+    /**
+     * Bucle principal del controlador que muestra el menú y ejecuta
+     * las acciones solicitadas por el usuario a través de la vista.
+     *
+     * Nota: el método entra en un bucle infinito hasta que la vista
+     * gestione una salida (esto reproduce el comportamiento original).
+     */
     public void run(){
         int op;
         while(true){
@@ -127,9 +144,21 @@ public class DealerController {
             if(option == EnumOptions.LIST_SALES){
                 view.showListSales(sales);
             }
+            if(option == EnumOptions.STATISTICS){
+                double averagePrice = statisticsAveragePriceSoldCars(sales);
+                double mostExpensivePrice = statisticsMostExpensiveCar(sales);
+                List<CarDTO> soldCars = statisticsCountCarsSold(sales);
+                view.showStatistics(averagePrice, mostExpensivePrice, soldCars);
+            }
         }
     }
 
+    /**
+     * Verifica que el DNI del nuevo cliente no exista ya en la lista.
+     *
+     * @param client cliente a verificar
+     * @return `true` si el DNI no existe y se puede añadir; `false` si ya existe
+     */
     public boolean verifyNewClientDNI(ClientDTO client){
         String dni = client.getDni();
 
@@ -142,6 +171,12 @@ public class DealerController {
         return true;
     }
 
+    /**
+     * Verifica que la matrícula del nuevo coche no exista ya en la lista.
+     *
+     * @param car coche a verificar
+     * @return `true` si la matrícula no existe y se puede añadir; `false` si ya existe
+     */
     public boolean verifyNewCar(CarDTO car){
         String plate = car.getCarPlate();
 
@@ -154,16 +189,30 @@ public class DealerController {
         return true;
     }
 
+    /**
+     * Añade un nuevo cliente a la colección y notifica a la vista.
+     *
+     * @param newClient cliente a añadir
+     */
     public void addClient(ClientDTO newClient){
         clients.add(newClient);
         view.msgConffirmation("El cliente fue registrado correctamente");
     }
 
+    /**
+     * Añade un nuevo coche a la colección y notifica a la vista.
+     *
+     * @param newCar coche a añadir
+     */
     public void addCar(CarDTO newCar){
         cars.add(newCar);
         view.msgConffirmation("El coche fue registrado correctamente");
     }
 
+    /**
+     * Muestra el submenú de búsqueda de coches y delega la búsqueda
+     * a la vista según el tipo seleccionado.
+     */
     public void menuSearchCar(){
         int op;
         while(true){
@@ -185,6 +234,13 @@ public class DealerController {
         }
     }
 
+    /**
+     * Registra una venta a partir de los datos del formulario.
+     * Busca el coche por matrícula y el cliente por DNI; marca el coche
+     * como vendido y añade la venta a la colección si todo es válido.
+     *
+     * @param form formulario con los datos de la venta
+     */
     public void registerSale(SaleForm form){
 
         CarDTO saleCar = null;
@@ -217,5 +273,48 @@ public class DealerController {
         sales.add(new SaleDTO(salesCount + 1, saleClient, saleCar, new Date(), saleCar.getPrice()));
         view.msgConffirmation("La venta se realizó correctamente");
 
+    }
+
+    public double statisticsAveragePriceSoldCars(List<SaleDTO> sales) {
+        double averagePrice = 0.0;
+        double priceSoldCar = 0.0;
+        int countSoldCars = 0;
+
+        for (int i = 0; i < sales.size(); i++) {
+            SaleDTO sale = sales.get(i);
+            CarDTO car = sale.getCar();
+            priceSoldCar = car.getPrice();
+            averagePrice = priceSoldCar + averagePrice;
+            countSoldCars++;
+        }
+
+        averagePrice = averagePrice / countSoldCars;
+
+        return averagePrice;
+    }
+
+    public double statisticsMostExpensiveCar(List<SaleDTO> sales) {
+        double priceMostExpensive = 0.0;
+
+        for (int i = 0; i < sales.size(); i++) {
+            SaleDTO sale = sales.get(i);
+            CarDTO car = sale.getCar();
+            if(priceMostExpensive < car.getPrice()){
+                priceMostExpensive =  car.getPrice();
+            }
+            priceMostExpensive = car.getPrice();
+        }
+        return priceMostExpensive;
+    }
+
+    public List<CarDTO> statisticsCountCarsSold(List<SaleDTO> sales) {
+        List<CarDTO> soldCars = new ArrayList<>();
+
+        for (int i = 0; i < sales.size(); i++) {
+            SaleDTO sale = sales.get(i);
+            CarDTO car = sale.getCar();
+            soldCars.add(car);
+        }
+        return soldCars;
     }
 }

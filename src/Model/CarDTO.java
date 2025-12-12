@@ -12,7 +12,7 @@ public class CarDTO {
     private double km;
     private boolean sold;
 
-    public CarDTO(String label, String model, String carPlate, double price, int years, double km) {
+    public CarDTO(String label, String model, String carPlate, double price, int years, double km, boolean sold) {
         this.label = label;
         this.model = model;
         this.carPlate = carPlate;
