@@ -7,9 +7,9 @@ public class ClientDTO {
 
     private String name;
     private String dni;
-    private int telNumber;
+    private String telNumber;
 
-    public ClientDTO(String name, String dni, int telNumber) {
+    public ClientDTO(String name, String dni, String telNumber) {
         this.name = name;
         this.dni = dni;
         this.telNumber = telNumber;
@@ -31,11 +31,11 @@ public class ClientDTO {
         this.dni = dni;
     }
 
-    public int getTelNumber() {
+    public String getTelNumber() {
         return telNumber;
     }
 
-    public void setTelNumber(int telNumber) {
+    public void setTelNumber(String telNumber) {
         this.telNumber = telNumber;
     }
 }

@@ -76,8 +76,8 @@ public class DealerController {
      * @return lista de `ClientDTO` cargados
      */
     public List<ClientDTO> loadClients(){
-        clients.add(new ClientDTO("Sara", "12396584C", 659887741));
-        clients.add(new ClientDTO("Pablo", "65988521C", 986552148));
+        clients.add(new ClientDTO("Sara", "12396584C", "+36 659887741"));
+        clients.add(new ClientDTO("Pablo", "65988521C", "+36 986552148"));
 
         return clients;
     }
@@ -97,7 +97,7 @@ public class DealerController {
      * Opciones del menú principal del controlador.
      */
     enum EnumOptions {
-        ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES, STATISTICS
+        ADD, SHOW, LOOK_FOR, REGISTER_CLIENT, REGISTER_SALE, LIST_SALES, STATISTICS, EXIT
     }
 
     /**
@@ -149,6 +149,10 @@ public class DealerController {
                 double mostExpensivePrice = statisticsMostExpensiveCar(sales);
                 List<CarDTO> soldCars = statisticsCountCarsSold(sales);
                 view.showStatistics(averagePrice, mostExpensivePrice, soldCars);
+            }
+            if(option == EnumOptions.EXIT){
+                view.msgConffirmation("Chao chao");
+                break;
             }
         }
     }
@@ -243,6 +247,19 @@ public class DealerController {
      */
     public void registerSale(SaleForm form){
 
+        ClientDTO saleClient = null;
+        for (ClientDTO client : clients) {
+            if(client.getDni().equals(form.getDniClient())){
+                saleClient = client;
+                break;
+            }
+        }
+
+        if(saleClient == null){
+            view.errorMsg("El cliente no existe");
+            return;
+        }
+
         CarDTO saleCar = null;
         for (CarDTO car : cars) {
             if(car.getCarPlate().equals(form.getPlateCar()) && !car.isSold()){
@@ -257,17 +274,10 @@ public class DealerController {
             return;
         }
 
-        ClientDTO saleClient = null;
-        for (ClientDTO client : clients) {
-            if(client.getDni().equals(form.getDniClient())){
-                saleClient = client;
-                break;
+        for(SaleDTO sale : sales){
+            if(sale.getIdSales() == form.getPrice()){
+                view.errorMsg("El ID de esta venta no es valido");
             }
-        }
-
-        if(saleClient == null){
-            view.errorMsg("El cliente no existe");
-            return;
         }
 
         sales.add(new SaleDTO(salesCount + 1, saleClient, saleCar, new Date(), saleCar.getPrice()));

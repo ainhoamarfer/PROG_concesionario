@@ -15,6 +15,7 @@ import java.util.Scanner;
  */
 public class DealerView {
 
+    public static final int PRICE_SCOPE = 5000;
     Scanner sc = new Scanner(System.in);
 
     /**
@@ -31,7 +32,8 @@ public class DealerView {
         System.out.println("4. Registrar un nuevo cliente");
         System.out.println("5. Registrar una venta");
         System.out.println("6. Listar ventas");
-        System.out.println("7. Estadísticas\n");
+        System.out.println("7. Estadísticas");
+        System.out.println("8. Salir\n");
 
         int opcion = -1;
         while (true) {
@@ -39,11 +41,12 @@ public class DealerView {
             opcion = sc.nextInt();
             //Es para corregir un comportamiento raro en nextInt donde no consume el /n
             sc.nextLine();
-            if (opcion >= 1 && opcion <= 7) {
+            if (opcion >= 1 && opcion <= 8) {
                 break;
             }
 
             System.err.println("Introduce una opción valida");
+
         }
         return opcion - 1;
     }
@@ -65,9 +68,9 @@ public class DealerView {
         System.out.println("La matricula");
         String carPlate = sc.nextLine();
 
-        if (carPlate.isEmpty()) {
+        while (carPlate.isEmpty()) {
             System.err.println("Es obligatorio introducir este campo");
-            registerCar();
+            carPlate = sc.nextLine();
         }
 
         System.out.println("Su precio");
@@ -173,7 +176,7 @@ public class DealerView {
         CarDTO car = null;
         for (int i = 0; i < cars.size(); i++) {
             car = cars.get(i);
-            if (car.getPrice() < price + 5000 && car.getPrice() > price - 5000 && !car.isSold()) {
+            if (car.getPrice() < price + PRICE_SCOPE && car.getPrice() > price - PRICE_SCOPE && !car.isSold()) {
                 System.out.println("Coches encontrados: " + car.getLabel() + " | Modelo: " + car.getModel() + " | Matrícula: " +
                         car.getCarPlate() + " | Precio: " + car.getPrice() + " euros | Año: " + car.getYears() + " | " + car.getKm() + " km.");
             } else System.err.println("No tenemos ningún coche registrado que ronde ese precio, lo siento.");
@@ -212,16 +215,16 @@ public class DealerView {
         System.out.println("Introduce el DNI del nuevo cliente");
         String dni = sc.nextLine();
 
-        if (dni.length() != 9 && dni.isEmpty()) {
+        while (dni.length() != 9 && dni.isEmpty()) {
             System.err.println("Ese DNI no es valido");
-            registerClientData();
+            dni = sc.nextLine();
         }
 
         System.out.println("Introduce el nombre del cliente");
         String name = sc.nextLine();
 
         System.out.println("Y su teléfono móvil");
-        int tel = Integer.parseInt(sc.nextLine());
+        String tel = sc.nextLine();
 
         return new ClientDTO(name, dni, tel);
     }
@@ -237,15 +240,36 @@ public class DealerView {
         System.out.println("Dime la matricula del coche a vender");
         String plate = sc.nextLine();
 
-        if(plate.length() != 9 && plate.isEmpty()) {
+        while(plate.length() != 9 && plate.isEmpty()) {
             System.err.println("Esta matrícula no es valida");
-            registerSaleData();
+            plate = sc.nextLine();
         }
 
         System.out.println("Ahora el DNI del comprador");
         String dni = sc.nextLine();
 
-        return new SaleForm(plate, dni);
+        while(dni.length() != 9 && dni.isEmpty()) {
+            System.err.println("Ese DNI no es valido");
+            dni = sc.nextLine();
+        }
+
+        //tengo dudas de la validación del precio, se que no esta bien
+        System.out.println("Por último el precio de venta");
+        String p = sc.nextLine().trim();
+
+        while(p.isEmpty()) {
+            System.err.println("Ese precio no es valido");
+            p = sc.nextLine().trim();
+        }
+
+        double price = Double.parseDouble(p);
+
+        while(price <= 0) {
+            System.err.println("Ese DNI no es valido");
+            price = Double.parseDouble(sc.nextLine());
+        }
+
+        return new SaleForm(plate, dni, price);
     }
 
     /**
