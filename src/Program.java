@@ -13,9 +13,13 @@ public class Program {
 
         DealerView dv = new DealerView();
         DealerController dealer = new DealerController(dv);
-        List<CarDTO> allCars = dealer.loadCars();
 
-        dv.menu();
+        dealer.loadCars();
+        dealer.loadClients();
+        dealer.loadSales();
+        dealer.run();
+
+
 
 
 

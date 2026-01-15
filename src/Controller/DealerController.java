@@ -24,7 +24,6 @@ public class DealerController {
     //6. Listar ventas
 
 
-
     private final List<CarDTO> cars;
     private final List<ClientDTO> clients;
     private final List<SaleDTO> sales;
@@ -48,10 +47,8 @@ public class DealerController {
         cars = new ArrayList<>(INITIAL_CARS);
         clients = new ArrayList<>(INITIAL_CLIENTS);
         sales = new ArrayList<>(INITIAL_SALES);
-        loadCars();
-        loadClients();
-        loadSales();
-        run();
+
+
     }
 
     /**
@@ -60,7 +57,7 @@ public class DealerController {
      *
      * @return lista de `CarDTO` cargados
      */
-    public List<CarDTO> loadCars(){
+    public List<CarDTO> loadCars() {
         cars.add(new CarDTO("Toyota", "T542", "123654WFT", 25000, 2000, 152000, true));
         cars.add(new CarDTO("Honda", "R125", "129545ERG", 40000, 2012, 20000, true));
         cars.add(new CarDTO("Toyota", "G159", "129754JUT", 45000, 1995, 48000, false));
@@ -75,18 +72,19 @@ public class DealerController {
      *
      * @return lista de `ClientDTO` cargados
      */
-    public List<ClientDTO> loadClients(){
+    public List<ClientDTO> loadClients() {
         clients.add(new ClientDTO("Sara", "12396584C", "+36 659887741"));
         clients.add(new ClientDTO("Pablo", "65988521C", "+36 986552148"));
 
         return clients;
     }
+
     /**
      * Carga una lista por defecto de ventas en memoria.
      *
      * @return lista de `SaleDTO` cargadas
      */
-    public List<SaleDTO> loadSales(){
+    public List<SaleDTO> loadSales() {
         sales.add(new SaleDTO(1, clients.get(1), cars.get(1), new Date(), 62000));
         sales.add(new SaleDTO(2, clients.get(0), cars.get(0), new Date(), 54000));
 
@@ -103,54 +101,54 @@ public class DealerController {
     /**
      * Bucle principal del controlador que muestra el menú y ejecuta
      * las acciones solicitadas por el usuario a través de la vista.
-     *
+     * <p>
      * Nota: el método entra en un bucle infinito hasta que la vista
      * gestione una salida (esto reproduce el comportamiento original).
      */
-    public void run(){
+    public void run() {
         int op;
-        while(true){
+        while (true) {
             op = view.menu();
             EnumOptions option = EnumOptions.values()[op];
 
-            if(option ==  EnumOptions.ADD){
+            if (option == EnumOptions.ADD) {
                 CarDTO car = view.registerCar();
                 boolean allowedCar = verifyNewCar(car);
-                if(allowedCar){
+                if (allowedCar) {
                     addCar(car);
                 }
             }
 
-            if(option == EnumOptions.SHOW){
+            if (option == EnumOptions.SHOW) {
                 view.showAvaliableCars(cars);
             }
 
-            if(option == EnumOptions.LOOK_FOR){
+            if (option == EnumOptions.LOOK_FOR) {
                 menuSearchCar();
             }
 
-            if(option == EnumOptions.REGISTER_CLIENT){
-                ClientDTO client= view.registerClientData();
+            if (option == EnumOptions.REGISTER_CLIENT) {
+                ClientDTO client = view.registerClientData();
                 boolean allowedClient = verifyNewClientDNI(client);
-                if(allowedClient){
+                if (allowedClient) {
                     addClient(client);
                 }
             }
-            if(option == EnumOptions.REGISTER_SALE){
-               SaleForm newSale = view.registerSaleData();
-               registerSale(newSale);
+            if (option == EnumOptions.REGISTER_SALE) {
+                SaleForm newSale = view.registerSaleData();
+                registerSale(newSale);
 
             }
-            if(option == EnumOptions.LIST_SALES){
+            if (option == EnumOptions.LIST_SALES) {
                 view.showListSales(sales);
             }
-            if(option == EnumOptions.STATISTICS){
+            if (option == EnumOptions.STATISTICS) {
                 double averagePrice = statisticsAveragePriceSoldCars(sales);
                 double mostExpensivePrice = statisticsMostExpensiveCar(sales);
                 List<CarDTO> soldCars = statisticsCountCarsSold(sales);
                 view.showStatistics(averagePrice, mostExpensivePrice, soldCars);
             }
-            if(option == EnumOptions.EXIT){
+            if (option == EnumOptions.EXIT) {
                 view.msgConffirmation("Chao chao");
                 break;
             }
@@ -163,7 +161,7 @@ public class DealerController {
      * @param client cliente a verificar
      * @return `true` si el DNI no existe y se puede añadir; `false` si ya existe
      */
-    public boolean verifyNewClientDNI(ClientDTO client){
+    public boolean verifyNewClientDNI(ClientDTO client) {
         String dni = client.getDni();
 
         for (ClientDTO clientDTO : clients) {
@@ -181,7 +179,7 @@ public class DealerController {
      * @param car coche a verificar
      * @return `true` si la matrícula no existe y se puede añadir; `false` si ya existe
      */
-    public boolean verifyNewCar(CarDTO car){
+    public boolean verifyNewCar(CarDTO car) {
         String plate = car.getCarPlate();
 
         for (CarDTO carDTO : cars) {
@@ -198,7 +196,7 @@ public class DealerController {
      *
      * @param newClient cliente a añadir
      */
-    public void addClient(ClientDTO newClient){
+    public void addClient(ClientDTO newClient) {
         clients.add(newClient);
         view.msgConffirmation("El cliente fue registrado correctamente");
     }
@@ -208,7 +206,7 @@ public class DealerController {
      *
      * @param newCar coche a añadir
      */
-    public void addCar(CarDTO newCar){
+    public void addCar(CarDTO newCar) {
         cars.add(newCar);
         view.msgConffirmation("El coche fue registrado correctamente");
     }
@@ -217,21 +215,21 @@ public class DealerController {
      * Muestra el submenú de búsqueda de coches y delega la búsqueda
      * a la vista según el tipo seleccionado.
      */
-    public void menuSearchCar(){
+    public void menuSearchCar() {
         int op;
-        while(true){
+        while (true) {
             op = view.typeOfCarSearch();
             TypeCarSearch option = TypeCarSearch.values()[op];
 
-            if(option == TypeCarSearch.LABEL){
+            if (option == TypeCarSearch.LABEL) {
                 view.searchCarByLabel(cars);
             }
 
-            if(option == TypeCarSearch.PRICE){
+            if (option == TypeCarSearch.PRICE) {
                 view.searchCarByPrice(cars);
             }
 
-            if(option == TypeCarSearch.YEAR){
+            if (option == TypeCarSearch.YEAR) {
                 view.searchCarByYear(cars);
             }
             run();
@@ -245,44 +243,50 @@ public class DealerController {
      *
      * @param form formulario con los datos de la venta
      */
-    public void registerSale(SaleForm form){
+    public void registerSale(SaleForm form) {
 
-        ClientDTO saleClient = null;
-        for (ClientDTO client : clients) {
-            if(client.getDni().equals(form.getDniClient())){
-                saleClient = client;
-                break;
-            }
-        }
+        ClientDTO saleClient = getClientDTO(form.getDniClient());
+        if (saleClient == null) return;
 
-        if(saleClient == null){
-            view.errorMsg("El cliente no existe");
-            return;
-        }
+        CarDTO saleCar = getCarDTO(form.getPlateCar());
+        if (saleCar == null) return;
 
+        sales.add(new SaleDTO(salesCount + 1, saleClient, saleCar, new Date(), saleCar.getPrice()));
+        view.msgConffirmation("La venta se realizó correctamente");
+
+    }
+
+    private CarDTO getCarDTO(String plate) {
         CarDTO saleCar = null;
         for (CarDTO car : cars) {
-            if(car.getCarPlate().equals(form.getPlateCar()) && !car.isSold()){
+            if (car.getCarPlate().equals(plate)) {
                 saleCar = car;
                 car.setSold(true);
                 break;
             }
         }
 
-        if(saleCar == null){
+        if (saleCar == null) {
             view.errorMsg("El coche no existe");
-            return;
+            return null;
         }
+        return saleCar;
+    }
 
-        for(SaleDTO sale : sales){
-            if(sale.getIdSales() == form.getPrice()){
-                view.errorMsg("El ID de esta venta no es valido");
+    private ClientDTO getClientDTO(String dni) {
+        ClientDTO saleClient = null;
+        for (ClientDTO client : clients) {
+            if (client.getDni().equals(dni)) {
+                saleClient = client;
+                break;
             }
         }
 
-        sales.add(new SaleDTO(salesCount + 1, saleClient, saleCar, new Date(), saleCar.getPrice()));
-        view.msgConffirmation("La venta se realizó correctamente");
-
+        if (saleClient == null) {
+            view.errorMsg("El cliente no existe");
+            return null;
+        }
+        return saleClient;
     }
 
     public double statisticsAveragePriceSoldCars(List<SaleDTO> sales) {
@@ -306,13 +310,18 @@ public class DealerController {
     public double statisticsMostExpensiveCar(List<SaleDTO> sales) {
         double priceMostExpensive = 0.0;
 
+        //revisar todo con lambdas
+        CarDTO car = cars.stream().max((c, c2) -> {
+            return Double.compare(c.getPrice(), c2.getPrice());
+        }).get();
+
         for (int i = 0; i < sales.size(); i++) {
             SaleDTO sale = sales.get(i);
-            CarDTO car = sale.getCar();
-            if(priceMostExpensive < car.getPrice()){
-                priceMostExpensive =  car.getPrice();
+            CarDTO carMax = sale.getCar();
+            if (priceMostExpensive < car.getPrice()) {
+                priceMostExpensive = car.getPrice();
             }
-            priceMostExpensive = car.getPrice();
+
         }
         return priceMostExpensive;
     }
